@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'pagina.dart';
+
 void main() {
   runApp(const App());
 }
@@ -23,7 +25,7 @@ class App extends StatelessWidget {
       darkTheme:
           ThemeData(brightness: Brightness.dark, primarySwatch: Colors.cyan),
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      home: const Pagina(),
     );
   }
 }
@@ -97,13 +99,13 @@ class _Homestate extends State<Home> {
                     }
                   },
                 ),
-                Text("Escolha no calendário a data de inicio do Curso"),
+                Text("Escolha no calendário a data de inicio da Turma"),
                 CalendarDatePicker2(
                   config: CalendarDatePicker2Config(),
                   value: _dates,
                   onValueChanged: (dates) => _dates = dates,
                 ),
-                Text("Escolha no calendário a data de Encerramento do Curso"),
+                Text("Escolha no calendário a data de Encerramento da Turma"),
                 CalendarDatePicker2(
                   config: CalendarDatePicker2Config(),
                   value: _dates,
@@ -127,9 +129,10 @@ class _Homestate extends State<Home> {
                 TextFormField(
                   controller: _fkcursocontroller,
                   decoration: const InputDecoration(
-                      labelText: "Insira o Curso que está cadastrando",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.accessibility_new)),
+                    labelText: "Insira a Turma que está cadastrando",
+                    border: OutlineInputBorder(),
+                    prefixIcon: Icon(Icons.account_balance_wallet_rounded),
+                  ),
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Campo Obrigatório";
@@ -139,9 +142,9 @@ class _Homestate extends State<Home> {
                 ElevatedButton(
                     onPressed: () {
                       if (_formkey.currentState!.validate()) {
-                        debugPrint("Musica Cadastrada com Sucesso");
+                        debugPrint("Curso Cadastrado com Sucesso");
                         Fluttertoast.showToast(
-                            msg: "Musica cadastrada com Sucesso ",
+                            msg: "Curso cadastrado com Sucesso ",
                             gravity: ToastGravity.TOP_RIGHT,
                             backgroundColor: Colors.green);
                       }
