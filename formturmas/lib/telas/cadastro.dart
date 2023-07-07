@@ -6,30 +6,11 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:formturmas/telas/login.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'telas/pagina.dart';
 
-void main() {
-  runApp(const App());
-}
 
-class App extends StatelessWidget {
-  const App({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Formulário de cadastro para : Turmas",
-      darkTheme:
-          ThemeData(brightness: Brightness.dark, primarySwatch: Colors.cyan),
-      debugShowCheckedModeBanner: false,
-      home: const Login(),
-    );
-  }
-}
 
 class Home extends StatefulWidget {
   const Home({super.key});
