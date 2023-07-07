@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:formturmas/telas/cadastro.dart';
 import 'package:formturmas/telas/login.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,138 +25,55 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "Formulário de cadastro para : Turmas",
-      darkTheme:
-          ThemeData(brightness: Brightness.dark, primarySwatch: Colors.cyan),
+      theme:
+          ThemeData(brightness: Brightness.dark, primarySwatch:generateMaterialColor(Palette.primary)),
       debugShowCheckedModeBanner: false,
       home: const Login(),
+      routes: {
+        '/cadastro':(context) => const Home(),
+        '/pagina':(context) => const Pagina()
+      },
     );
   }
 }
-
-class Home extends StatefulWidget {
-  const Home({super.key});
-
-  @override
-  State<Home> createState() => _Homestate();
+MaterialColor generateMaterialColor(Color color) {
+  return MaterialColor(color.value, {
+    50: tintColor(color, 0.9),
+    100: tintColor(color, 0.8),
+    200: tintColor(color, 0.6),
+    300: tintColor(color, 0.4),
+    400: tintColor(color, 0.2),
+    500: color,
+    600: shadeColor(color, 0.1),
+    700: shadeColor(color, 0.2),
+    800: shadeColor(color, 0.3),
+    900: shadeColor(color, 0.4),
+  });
 }
 
-class _Homestate extends State<Home> {
-  final _formkey = GlobalKey<FormState>();
-  final TextEditingController _turnocontroller = TextEditingController();
-  final TextEditingController _datainiciocontroller = TextEditingController();
-  final TextEditingController _datafimcontroller = TextEditingController();
-  final TextEditingController _horasauladiacontroller = TextEditingController();
-  final TextEditingController _fkcursocontroller = TextEditingController();
-  final format = DateFormat("hh:mm a");
+int tintValue(int value, double factor) =>
+    max(0, min((value + ((255 - value) * factor)).round(), 255));
 
-  List<DateTime?> _dialogCalendarPickerValue = [
-    DateTime(2021, 8, 10),
-    DateTime(2021, 8, 13),
-  ];
-  List<DateTime?> _dates = [
-    DateTime.now(),
-  ];
-  // List<DateTime?> _multiDatePickerValueWithDefaultValue = [
-  //   DateTime(today.year, today.month, 1),
-  //   DateTime(today.year, today.month, 5),
-  //   DateTime(today.year, today.month, 14),
-  //   DateTime(today.year, today.month, 17),
-  //   DateTime(today.year, today.month, 25),
-  // ];
-  List<DateTime?> _rangeDatePickerValueWithDefaultValue = [
-    DateTime(1999, 5, 6),
-    DateTime(1999, 5, 21),
-  ];
+Color tintColor(Color color, double factor) => Color.fromRGBO(
+    tintValue(color.red, factor),
+    tintValue(color.green, factor),
+    tintValue(color.blue, factor),
+    1);
 
-  List<DateTime?> _rangeDatePickerWithActionButtonsWithValue = [
-    DateTime.now(),
-    DateTime.now().add(const Duration(days: 5)),
-  ];
+int shadeValue(int value, double factor) =>
+    max(0, min(value - (value * factor).round(), 255));
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Formulário de cadastro para : Turmas"),
-        backgroundColor: Colors.cyan,
-      ),
-      body: Container(
-          margin: EdgeInsets.all(100),
-          padding: EdgeInsets.all(20),
-          child: Center(
-              child: SingleChildScrollView(
-                  child: Form(
-            key: _formkey,
-            child: Column(
-              children: [
-                TextFormField(
-                  controller: _turnocontroller,
-                  decoration: const InputDecoration(
-                      labelText:
-                          "Insira o turno ( Vespertino, Matutino ou Noturno )",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.add_alarm_sharp)),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Campo Obrigatório";
-                    }
-                  },
-                ),
-                Text("Escolha no calendário a data de inicio da Turma"),
-                CalendarDatePicker2(
-                  config: CalendarDatePicker2Config(),
-                  value: _dates,
-                  onValueChanged: (dates) => _dates = dates,
-                ),
-                Text("Escolha no calendário a data de Encerramento da Turma"),
-                CalendarDatePicker2(
-                  config: CalendarDatePicker2Config(),
-                  value: _dates,
-                  onValueChanged: (dates) => _dates = dates,
-                ),
-                DateTimeField(
-                  decoration: InputDecoration(
-                      labelText: "Escolha aqui o tempo de hora aula diário",
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.access_alarm_sharp)),
-                  format: format,
-                  onShowPicker: (context, currentValue) async {
-                    final TimeOfDay? time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.fromDateTime(
-                          currentValue ?? DateTime.now()),
-                    );
-                    return time == null ? null : DateTimeField.convert(time);
-                  },
-                ),
-                TextFormField(
-                  controller: _fkcursocontroller,
-                  decoration: const InputDecoration(
-                    labelText: "Insira a Turma que está cadastrando",
-                    border: OutlineInputBorder(),
-                    prefixIcon: Icon(Icons.account_balance_wallet_rounded),
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Campo Obrigatório";
-                    }
-                  },
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      if (_formkey.currentState!.validate()) {
-                        debugPrint("Curso Cadastrado com Sucesso");
-                        Fluttertoast.showToast(
-                            msg: "Curso cadastrado com Sucesso ",
-                            gravity: ToastGravity.TOP_RIGHT,
-                            backgroundColor: Colors.green);
-                      }
-                      ;
-                    },
-                    child: const Text("Cadastrar")),
-              ],
-            ),
-          )))),
-    );
-  }
+Color shadeColor(Color color, double factor) => Color.fromRGBO(
+    shadeValue(color.red, factor),
+    shadeValue(color.green, factor),
+    shadeValue(color.blue, factor),
+    1);
+
+
+
+
+class Palette {
+  // Your hexadecimal color code
+  static const Color primary = Color.fromARGB(255, 5, 184, 255);
 }
+
